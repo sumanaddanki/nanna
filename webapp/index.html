@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nanna - నాన్న</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFE4C4 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: #8B4513;
+        }
+
+        header p {
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Avatar */
+        .avatar-container {
+            position: relative;
+        }
+
+        .avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #DEB887, #D2B48C);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(139, 69, 19, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-face {
+            font-size: 80px;
+            user-select: none;
+        }
+
+        /* Speaking animation ring */
+        .speaking-ring {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            top: -10px;
+            left: -10px;
+        }
+
+        .speaking-ring.active {
+            border-color: #D2691E;
+            animation: pulse-ring 1.5s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.2); opacity: 0; }
+        }
+
+        /* Status indicator */
+        .status {
+            text-align: center;
+            min-height: 24px;
+            color: #8B4513;
+            font-weight: 500;
+        }
+
+        .status.listening { color: #228B22; }
+        .status.thinking { color: #DAA520; }
+        .status.speaking { color: #D2691E; }
+
+        /* Chat display */
+        .chat-display {
+            width: 100%;
+            min-height: 100px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 12px;
+            max-width: 90%;
+        }
+
+        .message.user {
+            background: #E8F5E9;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.nanna {
+            background: #FFF3E0;
+        }
+
+        .message .label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        /* Input area */
+        .input-area {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+        }
+
+        #text-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #DEB887;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #text-input:focus {
+            border-color: #D2691E;
+        }
+
+        .mic-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            background: #8B4513;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-btn:hover {
+            background: #A0522D;
+            transform: scale(1.05);
+        }
+
+        .mic-btn.recording {
+            background: #DC143C;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(220, 20, 60, 0); }
+        }
+
+        /* Settings panel */
+        .settings {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .settings summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #8B4513;
+        }
+
+        .settings-content {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-row input[type="text"],
+        .setting-row select {
+            padding: 8px 12px;
+            border: 1px solid #DEB887;
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-left: 8px;
+        }
+
+        .status-indicator.connected { background: #228B22; }
+        .status-indicator.disconnected { background: #DC143C; }
+
+        /* Debug panel */
+        .debug {
+            width: 100%;
+            font-family: monospace;
+            font-size: 0.8rem;
+            background: #1a1a2e;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 8px;
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .debug.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>నాన్న</h1>
+            <p>Nanna - Talk to me, Chinna</p>
+        </header>
+
+        <!-- Avatar -->
+        <div class="avatar-container">
+            <div class="speaking-ring" id="speaking-ring"></div>
+            <div class="avatar" id="avatar">
+                <span class="avatar-face">👨‍🦳</span>
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="status" id="status">Click mic or type to talk</div>
+
+        <!-- Chat Display -->
+        <div class="chat-display" id="chat-display">
+            <div class="message nanna">
+                <div class="label">Nanna</div>
+                Ra Chinna, nenu ready. Emi nerchukovalanukuntunnav?
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input type="text" id="text-input" placeholder="Type or speak..." autocomplete="off">
+            <button class="mic-btn" id="mic-btn" title="Hold to speak">🎤</button>
+        </div>
+
+        <!-- Settings -->
+        <details class="settings">
+            <summary>Settings</summary>
+            <div class="settings-content">
+                <div class="setting-row">
+                    <label>Gemini API Key:</label>
+                    <input type="text" id="gemini-key" placeholder="AIza...">
+                </div>
+                <div class="setting-row">
+                    <label>TTS Provider:</label>
+                    <select id="tts-provider">
+                        <option value="browser">Browser (Free)</option>
+                        <option value="elevenlabs">ElevenLabs</option>
+                        <option value="coqui">Coqui (Local)</option>
+                    </select>
+                </div>
+                <div class="setting-row">
+                    <label>ElevenLabs Key:</label>
+                    <input type="text" id="elevenlabs-key" placeholder="Optional">
+                </div>
+                <div class="setting-row">
+                    <label>Voice ID:</label>
+                    <input type="text" id="voice-id" placeholder="Clone voice ID">
+                </div>
+                <div class="setting-row">
+                    <label>STT Status:</label>
+                    <span>Web Speech API <span class="status-indicator" id="stt-status"></span></span>
+                </div>
+                <div class="setting-row">
+                    <label>Debug:</label>
+                    <input type="checkbox" id="debug-toggle">
+                </div>
+            </div>
+        </details>
+
+        <!-- Debug -->
+        <div class="debug" id="debug"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="stt.js"></script>
+    <script src="llm.js"></script>
+    <script src="tts.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
