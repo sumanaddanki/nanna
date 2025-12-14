@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nanna - నాన్న</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>నాన్న <span class="subtitle">Nanna</span></h1>
+            <p class="tagline">Your Father's Wisdom, Always With You</p>
+        </header>
+
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+            <div class="avatar-container">
+                <div class="avatar" id="avatar">
+                    <!-- Simple SVG Avatar -->
+                    <svg viewBox="0 0 200 200" class="avatar-svg">
+                        <!-- Face -->
+                        <circle cx="100" cy="100" r="80" fill="#DEB887"/>
+
+                        <!-- Eyes -->
+                        <g class="eyes" id="eyes">
+                            <ellipse cx="70" cy="85" rx="10" ry="12" fill="#2C1810"/>
+                            <ellipse cx="130" cy="85" rx="10" ry="12" fill="#2C1810"/>
+                            <!-- Eye shine -->
+                            <circle cx="73" cy="82" r="3" fill="white"/>
+                            <circle cx="133" cy="82" r="3" fill="white"/>
+                        </g>
+
+                        <!-- Eyebrows -->
+                        <g class="eyebrows" id="eyebrows">
+                            <path d="M55 65 Q70 58 85 65" stroke="#2C1810" stroke-width="3" fill="none"/>
+                            <path d="M115 65 Q130 58 145 65" stroke="#2C1810" stroke-width="3" fill="none"/>
+                        </g>
+
+                        <!-- Nose -->
+                        <path d="M100 90 L95 115 Q100 120 105 115 L100 90" fill="#C4A574"/>
+
+                        <!-- Mouth -->
+                        <g class="mouth" id="mouth">
+                            <path d="M75 135 Q100 155 125 135" stroke="#8B4513" stroke-width="3" fill="none" class="smile"/>
+                        </g>
+
+                        <!-- Mustache -->
+                        <path d="M70 125 Q85 135 100 128 Q115 135 130 125"
+                              fill="#4A4A4A" class="mustache"/>
+
+                        <!-- Hair (graying) -->
+                        <path d="M30 80 Q30 30 100 25 Q170 30 170 80"
+                              fill="#5A5A5A" class="hair"/>
+
+                        <!-- Glasses -->
+                        <g class="glasses">
+                            <rect x="50" y="75" width="40" height="30" rx="5"
+                                  fill="none" stroke="#333" stroke-width="2"/>
+                            <rect x="110" y="75" width="40" height="30" rx="5"
+                                  fill="none" stroke="#333" stroke-width="2"/>
+                            <path d="M90 90 L110 90" stroke="#333" stroke-width="2"/>
+                        </g>
+                    </svg>
+
+                    <!-- Expression Indicator -->
+                    <div class="expression-badge" id="expression-badge">😊</div>
+                </div>
+
+                <!-- Speaking Animation -->
+                <div class="speaking-indicator" id="speaking-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be added here -->
+            </div>
+
+            <div class="chat-input-container">
+                <input type="text"
+                       id="user-input"
+                       placeholder="Type your message to Nanna..."
+                       autocomplete="off">
+                <button id="send-btn" class="send-btn">Send</button>
+                <button id="voice-btn" class="voice-btn" title="Voice input">🎤</button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="action-btn" data-action="learn">📚 Learn</button>
+            <button class="action-btn" data-action="quiz">✍️ Quiz</button>
+            <button class="action-btn" data-action="explore">🔍 Explore</button>
+            <button class="action-btn" data-action="progress">📊 Progress</button>
+        </div>
+
+        <!-- Topic Selector -->
+        <div class="topic-selector" id="topic-selector" style="display: none;">
+            <h3>Select Topic</h3>
+            <div class="topic-grid">
+                <button class="topic-btn" data-topic="ai">🤖 AI & ML</button>
+                <button class="topic-btn" data-topic="finance">💰 Finance</button>
+                <button class="topic-btn" data-topic="insurance">🛡️ Insurance</button>
+                <button class="topic-btn" data-topic="math">📐 Math</button>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="settings">
+            <label>
+                <input type="checkbox" id="voice-enabled" checked>
+                Voice Enabled
+            </label>
+            <label>
+                Speed: <input type="range" id="voice-speed" min="0.5" max="1.5" step="0.1" value="0.9">
+            </label>
+        </div>
+    </div>
+
+    <script src="nanna-voice.js"></script>
+    <script src="avatar.js"></script>
+</body>
+</html>

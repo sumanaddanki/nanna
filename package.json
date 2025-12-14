@@ -1,0 +1,30 @@
+{
+  "name": "nanna",
+  "version": "1.0.0",
+  "description": "Nanna - A father's wisdom, always with you. AI-powered learning companion.",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "open avatar/index.html",
+    "dev": "npx live-server avatar",
+    "test": "echo \"Tests coming soon\""
+  },
+  "keywords": [
+    "ai",
+    "learning",
+    "education",
+    "telugu",
+    "avatar",
+    "claude"
+  ],
+  "author": "Chinna",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "nanna": {
+    "personality": "Telugu father figure",
+    "topics": ["AI", "Finance", "Insurance", "Math"],
+    "modes": ["learn", "quiz", "explore", "revise"]
+  }
+}
