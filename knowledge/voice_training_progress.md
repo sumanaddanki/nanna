@@ -183,9 +183,9 @@ tts --train --model_name xtts_v2 --dataset_path voices/processed/arjun/
 
 ## Hardware Notes
 
-- **Current Mac:** 228GB total, ~32GB free
-- **New Mac Studio:** Ordered (for training)
-- **Synology NAS:** For serving models
+- **Current Mac:** MacBook Air M2, 8GB RAM (voice collection done here)
+- **New Mac Studio:** M4 Max, 36GB RAM, 32-core GPU, 512GB SSD - $1,999 (for training)
+- **Synology NAS:** 4TB + 2TB (for storing models and serving)
 
 ---
 
