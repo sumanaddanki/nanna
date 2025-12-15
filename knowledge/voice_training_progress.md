@@ -183,19 +183,88 @@ tts --train --model_name xtts_v2 --dataset_path voices/processed/arjun/
 
 ## Hardware Notes
 
-- **Current Mac:** MacBook Air M2, 8GB RAM (voice collection done here)
-- **New Mac Studio:** M4 Max, 36GB RAM, 32-core GPU, 512GB SSD - $1,999 (for training)
-- **Synology NAS:** 4TB + 2TB (for storing models and serving)
+### Current MacBook (Voice Collection)
+- **Model:** MacBook Air M2 (Mac14,2)
+- **Serial:** XQVFY6V256
+- **Hostname:** Mac
+- **User:** sumanaddanke
+- **RAM:** 8GB
+- **Location:** US
+- **Voice data path:** `/Users/sumanaddanke/git/nanna/tools/voices/processed/` (5.2GB)
+
+### New Mac Studio (Arriving Tomorrow - For Training)
+- **Model:** Mac Studio M4 Max
+- **RAM:** 36GB
+- **GPU:** 32-core
+- **Storage:** 512GB SSD
+- **Price:** $1,999
+- **Purpose:** Train 6 voices with Coqui XTTS v2
+
+### NAS Infrastructure
+
+**US (Home) - Current:**
+- **Model:** Synology DS225+
+- **Current:** 2x 2TB HDD
+- **Upgrade:** 2x 4TB HDD (buying)
+
+**India (Dev/QA) - New:**
+- **Model:** Synology DS923+ (~$550)
+- **Main Bays:** 2x 2TB HDD (reused from US)
+- **M.2 Slots:** 2x 2TB NVMe (buying)
+- **Purpose:** Dev/QA testing, serve India users
 
 ---
 
 ## Transfer to Mac Studio
 
-When Mac Studio arrives:
-1. Copy `voices/processed/` folder
-2. Install Python 3.11, PyTorch, Coqui TTS
-3. Start training models
-4. Each model ~1.5GB output
+### When Mac Studio Arrives (Tomorrow):
+
+**Step 1: Transfer voice data (5.2GB)**
+```bash
+# Option A: AirDrop (easiest)
+# Open Finder → AirDrop → drag voices/processed/ folder
+
+# Option B: USB Drive
+# Copy to USB, then to Mac Studio
+
+# Option C: Network transfer (if on same WiFi)
+# On Mac Studio, enable File Sharing in System Settings
+# From MacBook:
+scp -r /Users/sumanaddanke/git/nanna/tools/voices/processed/ macstudio.local:/Users/[username]/nanna/voices/
+
+# Option D: Direct cable (Thunderbolt Target Disk Mode)
+# Fastest for large files
+```
+
+**Step 2: Clone git repo on Mac Studio**
+```bash
+cd ~
+git clone [your-repo-url] nanna
+cd nanna
+```
+
+**Step 3: Install dependencies**
+```bash
+# Install Homebrew
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Python 3.11
+brew install python@3.11
+
+# Install Coqui TTS
+pip3.11 install TTS torch torchaudio
+```
+
+**Step 4: Start training**
+```bash
+cd ~/nanna/tools
+# Training commands TBD after setup
+```
+
+### Files to Transfer:
+| Source (MacBook Air) | Size | Destination (Mac Studio) |
+|---------------------|------|-------------------------|
+| `tools/voices/processed/` | 5.2GB | `~/nanna/tools/voices/processed/` |
 
 ---
 
