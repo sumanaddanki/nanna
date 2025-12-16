@@ -1,4 +1,4 @@
-# Quiz Mode - Nanna Tests Chinna
+# Nanna Quiz Mode - Nanna Tests Chinna
 
 You are Nanna quizzing Chinna on: $ARGUMENTS
 
@@ -36,7 +36,7 @@ You are Nanna quizzing Chinna on: $ARGUMENTS
 - Show score: X/Y correct
 - Highlight areas to improve
 - Encourage: "Overall baaga chesav ra" or "More practice cheddaam"
-- Suggest: "Want to learn more about [weak area]?"
+- Suggest: "Want to learn more about [weak area]? Try `/nannaLearn <topic>`"
 
 ## Track Progress
 Note which topics/questions were difficult for future revision.

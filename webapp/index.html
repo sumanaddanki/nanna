@@ -68,6 +68,13 @@
             user-select: none;
         }
 
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
         /* Speaking animation ring */
         .speaking-ring {
             position: absolute;
@@ -260,11 +267,11 @@
             <p>Nanna - Talk to me, Chinna</p>
         </header>
 
-        <!-- Avatar -->
+        <!-- Avatar with animated expressions -->
         <div class="avatar-container">
             <div class="speaking-ring" id="speaking-ring"></div>
             <div class="avatar" id="avatar">
-                <span class="avatar-face">👨‍🦳</span>
+                <!-- Avatar images loaded by avatar.js -->
             </div>
         </div>
 
@@ -285,9 +292,29 @@
             <button class="mic-btn" id="mic-btn" title="Hold to speak">🎤</button>
         </div>
 
+        <!-- Voice Upload Section -->
+        <details class="settings" style="background: #FFF8E7;">
+            <summary>🎙️ Upload Nanna's Voice</summary>
+            <div class="settings-content">
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                    Upload a .wav file of Nanna speaking to clone his voice
+                </p>
+                <div class="setting-row" style="flex-direction: column; align-items: stretch; gap: 10px;">
+                    <input type="file" id="voice-upload" accept=".wav,.mp3,.m4a" style="padding: 10px; border: 2px dashed #DEB887; border-radius: 8px;">
+                    <div id="upload-status" style="font-size: 0.85rem; color: #666;"></div>
+                    <audio id="voice-preview" controls style="width: 100%; display: none;"></audio>
+                </div>
+                <div class="setting-row" style="margin-top: 10px;">
+                    <button id="clone-voice-btn" style="padding: 10px 20px; background: #8B4513; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%;" disabled>
+                        Clone Voice with ElevenLabs
+                    </button>
+                </div>
+            </div>
+        </details>
+
         <!-- Settings -->
         <details class="settings">
-            <summary>Settings</summary>
+            <summary>⚙️ Settings</summary>
             <div class="settings-content">
                 <div class="setting-row">
                     <label>Gemini API Key:</label>
@@ -309,6 +336,22 @@
                     <label>Voice ID:</label>
                     <input type="text" id="voice-id" placeholder="Clone voice ID">
                 </div>
+
+                <!-- Voice Controls -->
+                <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #DEB887;">
+                    <strong style="color: #8B4513;">Voice Settings (50+ Male)</strong>
+                </div>
+                <div class="setting-row">
+                    <label>Pitch (deeper ← → higher):</label>
+                    <input type="range" id="voice-pitch" min="0.5" max="1.5" step="0.1" value="0.8">
+                    <span id="pitch-value">0.8</span>
+                </div>
+                <div class="setting-row">
+                    <label>Speed (slower ← → faster):</label>
+                    <input type="range" id="voice-rate" min="0.6" max="1.2" step="0.05" value="0.9">
+                    <span id="rate-value">0.9</span>
+                </div>
+
                 <div class="setting-row">
                     <label>STT Status:</label>
                     <span>Web Speech API <span class="status-indicator" id="stt-status"></span></span>
@@ -316,6 +359,10 @@
                 <div class="setting-row">
                     <label>Debug:</label>
                     <input type="checkbox" id="debug-toggle">
+                </div>
+                <div class="setting-row">
+                    <label>Test Voice:</label>
+                    <button id="test-voice-btn" style="padding: 8px 16px; cursor: pointer;">🔊 Test</button>
                 </div>
             </div>
         </details>
@@ -328,6 +375,7 @@
     <script src="stt.js"></script>
     <script src="llm.js"></script>
     <script src="tts.js"></script>
+    <script src="avatar.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

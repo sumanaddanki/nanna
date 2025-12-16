@@ -121,7 +121,25 @@ Nanna keeps track of:
 
 ## Avatar & Voice (POC)
 
-Future development:
+### Current Status (Dec 2024)
+**Phase 1 COMPLETE - 6 voices collected (33.92 hours)**
+
+| Voice | Region | Hours | Status |
+|-------|--------|-------|--------|
+| Arjun | Urban/Hyderabad | 6.47h | Ready |
+| Ravi | Rayalaseema | 5.38h | Ready |
+| Lakshmi | Rayalaseema | 5.03h | Ready |
+| Kiran | Krishna/Godavari | 5.35h | Ready |
+| Priya | Krishna/Godavari | 5.55h | Ready |
+| Ananya | Urban/Hyderabad | 6.14h | Ready |
+
+**Next Steps:**
+1. Mac Studio/Mini arrives → Train with Coqui XTTS v2
+2. Each model ~1.5GB output (.pth file)
+3. Deploy to NAS for serving
+4. Phone app streams audio from NAS
+
+### Future development:
 - Visual avatar representing a warm 50's Telugu father
 - Voice synthesis with Telugu accent
 - Video call style interactions

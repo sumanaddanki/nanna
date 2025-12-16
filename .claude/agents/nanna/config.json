@@ -1,0 +1,45 @@
+{
+  "agent_id": "nanna",
+  "agent_name": "Nanna",
+  "version": "1.0.0",
+  "created": "2024-12-13",
+  "updated": "2025-12-14",
+  "description": "Telugu father figure teaching agent",
+
+  "files": {
+    "rules": "agent_rules.md",
+    "context": "agent_context.md",
+    "personality": "../../../CLAUDE.md"
+  },
+
+  "commands": [
+    "/nanna",
+    "/learn",
+    "/quiz",
+    "/quiz-random",
+    "/explore",
+    "/revise",
+    "/progress",
+    "/topics"
+  ],
+
+  "topics": [
+    "ai",
+    "machine-learning",
+    "mathematics",
+    "finance",
+    "trading",
+    "insurance"
+  ],
+
+  "language": {
+    "primary": "english",
+    "secondary": "telugu",
+    "style": "tenglish"
+  },
+
+  "user": {
+    "name": "Chinna",
+    "real_name": "Suman Addanke"
+  }
+}

@@ -41,6 +41,8 @@ class TextToSpeech {
         if (!text) return;
 
         const provider = CONFIG.TTS.provider;
+        console.log('TTS PROVIDER:', provider);
+        console.log('TTS CONFIG:', CONFIG.TTS);
         debug(`TTS: Speaking with ${provider}: "${text.substring(0, 50)}..."`);
 
         this.isSpeaking = true;
@@ -53,6 +55,9 @@ class TextToSpeech {
                     break;
                 case 'elevenlabs':
                     await this.speakElevenLabs(text);
+                    break;
+                case 'resemble':
+                    await this.speakResemble(text);
                     break;
                 case 'coqui':
                     await this.speakCoqui(text);
@@ -77,6 +82,9 @@ class TextToSpeech {
      */
     speakBrowser(text) {
         return new Promise((resolve, reject) => {
+            console.log('TTS: Starting browser speech...');
+            console.log('TTS: Text:', text);
+
             // Cancel any ongoing speech
             this.synth.cancel();
 
@@ -84,31 +92,52 @@ class TextToSpeech {
 
             // Apply settings
             const settings = CONFIG.TTS.browserVoice;
+            console.log('TTS: Settings:', settings);
+
             utterance.rate = settings.rate;
             utterance.pitch = settings.pitch;
             utterance.volume = settings.volume;
             utterance.lang = settings.lang;
 
-            // Try to find Indian English voice
+            // Try to find a male voice or Indian English voice
             const voices = this.synth.getVoices();
-            const indianVoice = voices.find(v => v.lang.includes('IN')) ||
-                               voices.find(v => v.lang.startsWith('en'));
-            if (indianVoice) {
-                utterance.voice = indianVoice;
+            console.log('TTS: Available voices:', voices.length);
+
+            // Prefer male voices
+            let selectedVoice = voices.find(v => v.name.toLowerCase().includes('male') && v.lang.startsWith('en'));
+            if (!selectedVoice) {
+                selectedVoice = voices.find(v => v.lang.includes('IN'));
+            }
+            if (!selectedVoice) {
+                selectedVoice = voices.find(v => v.lang.startsWith('en'));
             }
 
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+                console.log('TTS: Selected voice:', selectedVoice.name, selectedVoice.lang);
+            } else {
+                console.log('TTS: Using default voice');
+            }
+
+            utterance.onstart = () => {
+                console.log('TTS: Speech started');
+            };
+
             utterance.onend = () => {
+                console.log('TTS: Speech ended');
                 this.isSpeaking = false;
                 if (this.onEnd) this.onEnd();
                 resolve();
             };
 
             utterance.onerror = (event) => {
+                console.error('TTS Error:', event.error);
                 this.isSpeaking = false;
                 if (this.onEnd) this.onEnd();
                 reject(new Error(event.error));
             };
 
+            console.log('TTS: Calling synth.speak()');
             this.synth.speak(utterance);
         });
     }
@@ -160,6 +189,84 @@ class TextToSpeech {
     }
 
     /**
+     * Resemble.ai TTS (Voice Cloning)
+     * Creates a clip and plays it
+     */
+    async speakResemble(text) {
+        const settings = CONFIG.TTS.resemble;
+
+        if (!settings.apiKey) {
+            throw new Error('Resemble API key not set');
+        }
+
+        if (!settings.voiceUuid || !settings.projectUuid) {
+            throw new Error('Resemble Voice/Project UUID not set');
+        }
+
+        // Use local proxy to bypass CORS
+        const url = '/api/resemble';
+
+        console.log('Resemble: Creating clip via proxy...');
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: text
+            })
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Resemble error:', errorText);
+            throw new Error('Resemble API error: ' + response.status);
+        }
+
+        const data = await response.json();
+        console.log('Resemble response:', data);
+
+        // Check if audio URL is available
+        if (data.item && data.item.audio_src) {
+            return this.playAudio(data.item.audio_src);
+        } else if (data.item && data.item.uuid) {
+            // Audio not ready yet, need to poll
+            return this.pollResembleClip(data.item.uuid);
+        } else {
+            throw new Error('No audio returned from Resemble');
+        }
+    }
+
+    /**
+     * Poll for Resemble clip to be ready
+     */
+    async pollResembleClip(clipUuid, maxAttempts = 30) {
+        const settings = CONFIG.TTS.resemble;
+        const url = `https://app.resemble.ai/api/v2/projects/${settings.projectUuid}/clips/${clipUuid}`;
+
+        for (let i = 0; i < maxAttempts; i++) {
+            await new Promise(resolve => setTimeout(resolve, 500)); // Wait 500ms
+
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Token token=${settings.apiKey}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.item && data.item.audio_src) {
+                    console.log('Resemble: Audio ready!');
+                    return this.playAudio(data.item.audio_src);
+                }
+            }
+        }
+
+        throw new Error('Resemble audio generation timed out');
+    }
+
+    /**
      * Coqui TTS (Local/Self-hosted)
      * Requires running Coqui server locally
      */
@@ -174,7 +281,8 @@ class TextToSpeech {
             },
             body: JSON.stringify({
                 text: text,
-                speaker_id: settings.speakerId
+                voice: settings.speakerId,
+                language: 'hi'  // Hindi closest to Telugu
             })
         });
 

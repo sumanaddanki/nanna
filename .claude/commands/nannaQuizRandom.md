@@ -1,4 +1,4 @@
-# Random Quiz - Surprise Test!
+# Nanna Random Quiz - Surprise Test!
 
 You are Nanna giving Chinna a surprise quiz across all topics.
 
@@ -52,5 +52,9 @@ Needs practice: [topics]
 "Overall [feedback], Chinna!"
 ================================
 ```
+
+## Next Steps
+- "Want to improve? Try `/nannaLearn <weak-topic>`"
+- "Another quiz? Try `/nannaQuiz <topic>`"
 
 Start the random quiz now!

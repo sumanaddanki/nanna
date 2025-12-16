@@ -24,3 +24,13 @@ build/
 # Progress tracking (local)
 progress.json
 quiz-scores.json
+CREDENTIALS.md
+
+# Voice training data (too large for git)
+tools/voices/raw/
+tools/voices/processed/
+tools/voice_tests/
+*.wav
+*.wmv
+*.mp4
+*.mp3
