@@ -77,7 +77,7 @@ cd /Users/sumanaddanke/git/nanna/tools
 ## Directory Structure
 
 ```
-/Users/sumanaddanke/git/nanna/tools/
+/Users/sumanaddanke/git/sumanaddanki/nanna/tools/
 ├── voices/
 │   ├── raw/           # Downloaded WAV files (DELETE after processing)
 │   │   ├── arjun/     # EMPTY (cleaned)
@@ -183,22 +183,29 @@ tts --train --model_name xtts_v2 --dataset_path voices/processed/arjun/
 
 ## Hardware Notes
 
-### Current MacBook (Voice Collection)
+### MacBook Air M2 (Voice Collection - Source)
 - **Model:** MacBook Air M2 (Mac14,2)
 - **Serial:** XQVFY6V256
 - **Hostname:** Mac
 - **User:** sumanaddanke
 - **RAM:** 8GB
 - **Location:** US
-- **Voice data path:** `/Users/sumanaddanke/git/nanna/tools/voices/processed/` (5.2GB)
+- **Voice data path:** `/Users/sumanaddanke/git/sumanaddanki/nanna/tools/voices/processed/` (5.1GB)
 
-### New Mac Studio (Arriving Tomorrow - For Training)
+### Mac Studio M4 Max (Training - Target) - SETUP COMPLETE!
 - **Model:** Mac Studio M4 Max
 - **RAM:** 36GB
 - **GPU:** 32-core
 - **Storage:** 512GB SSD
 - **Price:** $1,999
+- **Hostname:** Mac-Studio
+- **Username:** semostudio
+- **IP Address:** 192.168.1.196 (WiFi - en1)
+- **Git Repo:** `/Users/semostudio/git/sumanaddanki/nanna/`
+- **Voice Data:** `/Users/semostudio/git/sumanaddanki/nanna/tools/voices/processed/` (5.1GB transferred)
 - **Purpose:** Train 6 voices with Coqui XTTS v2
+- **SSH Key:** Configured from MacBook Air
+- **Remote Login:** Enabled
 
 ### NAS Infrastructure
 

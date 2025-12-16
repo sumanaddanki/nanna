@@ -2,155 +2,189 @@
 
 ## Current State
 - **Status:** Active
-- **Last Updated:** 2025-12-14
-- **Version:** 1.0
+- **Last Updated:** 2025-12-16
+- **Version:** 1.1
 
 ## User Profile
 - **Name:** Chinna (Suman Addanke)
 - **Relationship:** Son (figuratively)
 - **Learning Style:** Hands-on, practical
 
-## Project Context
+---
 
-### Voice Training (Phase 1 Complete)
-| Voice | Region | Hours | Status |
-|-------|--------|-------|--------|
-| Arjun | Urban/Hyderabad | 6.47h | Ready |
-| Ravi | Rayalaseema | 5.38h | Ready |
-| Lakshmi | Rayalaseema | 5.03h | Ready |
-| Kiran | Krishna/Godavari | 5.35h | Ready |
-| Priya | Krishna/Godavari | 5.55h | Ready |
-| Ananya | Urban/Hyderabad | 6.14h | Ready |
+## Voice Training - PHASE 1 COMPLETE
 
-**Total:** 33.92 hours collected
+**Total Collected: 33.92 hours (5.1GB)**
 
-### Hardware
-- **MacBook Air M2:** Voice collection (current)
-- **Mac Studio M4 Max:** Training (arriving tomorrow)
-- **NAS US:** DS225+ (home)
-- **NAS India:** DS923+ (dev/QA)
+| # | Voice | Region | Gender | Age | Hours | Size | Status |
+|---|-------|--------|--------|-----|-------|------|--------|
+| 1 | **Arjun** | Urban/Hyderabad | Male | 20s | 6.47h | 979MB | READY |
+| 2 | **Ravi** | Rayalaseema | Male | 40s | 5.38h | 814MB | READY |
+| 3 | **Lakshmi** | Rayalaseema | Female | 40s | 5.03h | 761MB | READY |
+| 4 | **Kiran** | Krishna/Godavari | Male | 20s | 5.35h | 810MB | READY |
+| 5 | **Priya** | Krishna/Godavari | Female | 20s | 5.55h | 840MB | READY |
+| 6 | **Ananya** | Urban/Hyderabad | Female | 20s | 6.14h | 930MB | READY |
 
-### Architecture
+**Voice Files Location (MacBook Air):**
+```
+/Users/sumanaddanke/git/sumanaddanki/nanna/tools/voices/processed/
+├── arjun/     (6.47h, 979MB)
+├── ravi/      (5.38h, 814MB)
+├── lakshmi/   (5.03h, 761MB)
+├── kiran/     (5.35h, 810MB)
+├── priya/     (5.55h, 840MB)
+└── ananya/    (6.14h, 930MB)
+```
+
+**NOT in git** - Files are in .gitignore (too large, 5.1GB total)
+
+---
+
+## Hardware
+
+### MacBook Air M2 (Source - Voice Collection)
+| Property | Value |
+|----------|-------|
+| Model | MacBook Air M2 (Mac14,2) |
+| Serial | XQVFY6V256 |
+| Hostname | Mac |
+| Username | sumanaddanke |
+| Location | US (Home) |
+| OS | macOS (Darwin 25.1.0) |
+| RAM | 8GB |
+| Git Repo | `/Users/sumanaddanke/git/sumanaddanki/nanna/` |
+| Voice Data | `/Users/sumanaddanke/git/sumanaddanki/nanna/tools/voices/processed/` |
+| Voice Size | 5.1GB (6 voices, 33.92 hours) |
+
+### Mac Studio M4 Max (Target - Training)
+| Property | Value |
+|----------|-------|
+| Model | Mac Studio M4 Max |
+| RAM | 36GB |
+| GPU | 32-core |
+| Storage | 512GB SSD |
+| Price | $1,999 |
+| Hostname | Mac-Studio |
+| Username | semostudio |
+| IP Address | 192.168.1.196 (WiFi - en1) |
+| Git Repo | `/Users/semostudio/git/sumanaddanki/nanna/` |
+| Voice Data | `/Users/semostudio/git/sumanaddanki/nanna/tools/voices/processed/` |
+| Status | SETUP COMPLETE - Voice files transferred |
+
+### SSH Setup (COMPLETED 2025-12-16)
+- SSH key from MacBook Air added to Mac Studio
+- Key: `~/.ssh/id_mac_suman_addanki`
+- Public key added to Mac Studio's `~/.ssh/authorized_keys`
+- Remote Login must be enabled on Mac Studio
+
+**SSH Command:**
+```bash
+ssh -i ~/.ssh/id_mac_suman_addanki semostudio@192.168.1.196
+```
+
+---
+
+## Transfer Plan (Voice Files)
+
+### Status: COMPLETED (2025-12-16)
+
+**From (MacBook Air):**
+```
+/Users/sumanaddanke/git/sumanaddanki/nanna/tools/voices/processed/
+```
+
+**To (Mac Studio):**
+```
+/Users/semostudio/git/sumanaddanki/nanna/tools/voices/processed/
+```
+
+**Transfer completed via:**
+```bash
+scp -r -i ~/.ssh/id_mac_suman_addanki \
+  /Users/sumanaddanke/git/sumanaddanki/nanna/tools/voices/processed/* \
+  semostudio@192.168.1.196:/Users/semostudio/git/sumanaddanki/nanna/tools/voices/processed/
+```
+
+---
+
+## NAS Infrastructure
+
+### US (Home)
+- **Model:** Synology DS225+
+- **Current:** 2x 2TB HDD
+- **Upgrade:** 2x 4TB HDD (planned)
+
+### India (Dev/QA)
+- **Model:** Synology DS923+ (~$550)
+- **Main Bays:** 2x 2TB HDD (reused from US)
+- **M.2 Slots:** 2x 2TB NVMe (planned)
+- **Purpose:** Dev/QA testing, serve India users
+
+---
+
+## Architecture
 - Multi-region: US + India
 - Data residency: +91 → India, +1 → US
 - TTS served from regional NAS
 
-## Learning Progress
-- Topics covered: TBD
-- Quiz scores: TBD
-- Current streak: TBD
-
-## Session Memory
-- Last session: 2025-12-14
-- Topics discussed: Voice training, NAS architecture, Mac Studio, DS923+ NAS
-- Next planned: Mac Studio setup, voice model training
-
 ---
 
-## Next Session TODO (IMPORTANT - READ FIRST!)
+## Training Plan (After Transfer)
 
-**When user returns, IMMEDIATELY ask:**
-1. "Mac Studio arrive ayyinda, Chinna?" (Did Mac Studio arrive?)
-2. Get Mac Studio details (hostname, username, IP)
-3. Help copy 5.2GB voice files from MacBook Air to Mac Studio
+### On Mac Studio:
+1. Install Homebrew
+2. Install Python 3.11
+3. Install Coqui TTS / XTTS v2
+4. Train 6 voice models
+5. Each model ~1.5GB output (.pth file)
+6. Deploy to NAS for serving
 
----
-
-## Source Machine (MacBook Air - CURRENT)
-
-| Property | Value |
-|----------|-------|
-| **Model** | MacBook Air M2 (Mac14,2) |
-| **Serial** | XQVFY6V256 |
-| **Hostname** | Mac |
-| **Username** | sumanaddanke |
-| **Location** | US (Home) |
-| **OS** | macOS (Darwin 25.1.0) |
-| **RAM** | 8GB |
-| **Git Repo** | `/Users/sumanaddanke/git/nanna/` |
-| **Voice Data** | `/Users/sumanaddanke/git/nanna/tools/voices/processed/` |
-| **Voice Size** | 5.2GB (6 voices, 33.92 hours) |
-
-### Voice Files on MacBook:
-```
-/Users/sumanaddanke/git/nanna/tools/voices/processed/
-├── arjun/    (6.47h)
-├── ravi/     (5.38h)
-├── lakshmi/  (5.03h)
-├── kiran/    (5.35h)
-├── priya/    (5.55h)
-└── ananya/   (6.14h)
-```
-
----
-
-## Target Machine (Mac Studio - ARRIVING TOMORROW)
-
-| Property | Value |
-|----------|-------|
-| **Model** | Mac Studio M4 Max |
-| **RAM** | 36GB |
-| **GPU** | 32-core |
-| **Storage** | 512GB SSD |
-| **Price** | $1,999 |
-| **Hostname** | TBD (ask user) |
-| **Username** | TBD (ask user) |
-| **IP Address** | TBD (find on same network) |
-
----
-
-## Transfer Plan
-
-### Step 1: Get Mac Studio Details
+### Training Commands (TBD):
 ```bash
-# On Mac Studio, run:
-hostname
-whoami
-ipconfig getifaddr en0
-```
-
-### Step 2: Transfer Voice Files (5.2GB)
-```bash
-# Option A: AirDrop (easiest)
-# Open Finder → AirDrop → drag voices/processed/
-
-# Option B: scp (if same WiFi)
-scp -r /Users/sumanaddanke/git/nanna/tools/voices/processed/ [user]@[mac-studio-ip]:~/nanna/voices/
-
-# Option C: USB Drive
-# Copy to USB → plug into Mac Studio
-```
-
-### Step 3: Setup Mac Studio
-```bash
-# Install Homebrew
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Install Python 3.11
-brew install python@3.11
-
-# Clone repo
-git clone [repo-url] ~/nanna
-
-# Install TTS
 pip3.11 install TTS torch torchaudio
-
-# Copy voice files to repo
-cp -r ~/nanna/voices/ ~/nanna/tools/voices/processed/
-```
-
-### Step 4: Start Training
-```bash
-cd ~/nanna/tools
-# Training commands TBD
+tts --train --model_name xtts_v2 --dataset_path voices/processed/arjun/
 ```
 
 ---
 
-## Network Discovery Commands
-```bash
-# Find Mac Studio on network (run from MacBook):
-ping mac-studio.local
-arp -a | grep -i "mac"
-dns-sd -B _afpovertcp._tcp
-```
+## Session History
+
+### 2025-12-16 (Session 2)
+- SSH connection established to Mac Studio (IP: 192.168.1.196 via WiFi en1)
+- Created tools/voices/processed folder structure on Mac Studio
+- Transferred 5.1GB voice files (6 voices) to Mac Studio
+- Copied Python scripts (batch_collect_voices.py, etc.) to Mac Studio
+- Updated agent_context.md with complete details
+- Ready for voice training on Mac Studio
+
+### 2025-12-16 (Session 1)
+- Mac Studio arrived and set up
+- SSH key configured between MacBook Air and Mac Studio
+- Verified voice files: 5.1GB, 6 voices, 33.92 hours
+- Remote Login enabled on Mac Studio
+
+### 2025-12-14
+- Completed Phase 1 voice collection
+- 6 voices ready: Arjun, Ravi, Lakshmi, Kiran, Priya, Ananya
+- Total: 33.92 hours collected
+- Documented Mac Studio specs and transfer plan
+
+---
+
+## Next Session TODO
+
+**READ THIS FIRST when starting new session:**
+
+1. Voice files TRANSFERRED to Mac Studio (2025-12-16)
+2. Start training setup on Mac Studio:
+   - Install Homebrew, Python 3.11, Coqui TTS
+   - Run training on 6 voices
+3. Voice files are NOT in git - already on both machines
+
+**Key Facts to Remember:**
+- 6 voices collected: Arjun, Ravi, Lakshmi, Kiran, Priya, Ananya
+- Total: 33.92 hours, 5.1GB
+- MacBook Air = source (sumanaddanke) - voice collection done
+- Mac Studio = training machine (semostudio@192.168.1.196)
+- SSH key configured, Remote Login enabled
+- Voice files on BOTH machines now
