@@ -27,10 +27,20 @@ quiz-scores.json
 CREDENTIALS.md
 
 # Voice training data (too large for git)
-tools/voices/raw/
-tools/voices/processed/
+tools/voices/
 tools/voice_tests/
+tools/bin/
 *.wav
 *.wmv
 *.mp4
 *.mp3
+*.m4a
+
+# Python virtual environments
+venv/
+tools/venv-xtts/
+__pycache__/
+*.pyc
+
+# Amma POC voice recordings
+amma-poc/voice/

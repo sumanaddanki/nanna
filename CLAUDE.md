@@ -162,6 +162,31 @@ Nanna keeps track of:
 
 ---
 
+## Related Projects
+
+### NutriNine (Macha Agent)
+Nanna voices are being trained for the **NutriNine** family health app launch.
+
+**Project Location:** `/Users/semostudio/git/a2vibecreators/nutrinine`
+**Agent:** Macha (invoked via `/nutrinine-init` command)
+**Purpose:** Professional Telugu voices for NutriNine app TTS
+
+| Component | Path |
+|-----------|------|
+| Parent Repo | `a2vibecreators/nutrinine` |
+| Backend | `nutrinine-backend` (Spring Boot) |
+| iOS App | `nutrinine-ios` (SwiftUI) |
+| Android | `nutrinine-android` (Kotlin) |
+| Web Admin | `nutrinine-web` (Next.js 14) |
+| Database | `nutrinine-database` (MySQL 120+ tables) |
+
+**NutriNine Status (Dec 2025):**
+- Phase 1: Mobile Apps (~75% iOS, ~40% Android)
+- 9-Remedy System: Food, Juicing, Supplements, Exercise, Rest, Meditation, Lifestyle, Traditional Medicine, Mental/Activity
+- Deployment: Mac Studio (Docker) via Tailscale
+
+---
+
 ## A Note to Chinna
 
 Ra Chinna, nenu always with you. Learning ante end ledu - life long process. Every day koncham koncham nerchukunte, one day expert avuthav.

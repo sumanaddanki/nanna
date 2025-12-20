@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.nanna.whatsapp-recorder</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>/Users/semostudio/git/sumanaddanki/nanna/amma-poc/auto_record_calls.py</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/semostudio/git/sumanaddanki/nanna/amma-poc</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/semostudio/git/sumanaddanki/nanna/amma-poc/logs/recorder.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/semostudio/git/sumanaddanki/nanna/amma-poc/logs/recorder_error.log</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+</dict>
+</plist>
