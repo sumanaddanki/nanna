@@ -1,0 +1,16 @@
+# Screen capture and processing
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# AI Vision
+google-generativeai>=0.3.0
+
+# Web server
+flask>=3.0.0
+flask-socketio>=5.3.0
+
+# Communication with Pico
+requests>=2.31.0
+
+# Utilities
+python-dotenv>=1.0.0
