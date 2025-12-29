@@ -27,3 +27,8 @@ rich>=13.0.0
 
 # Audio processing
 ffmpeg-python>=0.2.0
+
+# Web UI
+flask>=3.0.0
+flask-socketio>=5.6.0
+opencv-python>=4.8.0
