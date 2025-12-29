@@ -1,0 +1,60 @@
+{
+  "name": "Veg Paneer",
+  "description": "Learn how to make Veg Paneer, a very famous Punjabi dish. There are many ways to make this dish, using different spices.",
+  "prep_time_minutes": 10,
+  "cooking_time_minutes": 15,
+  "servings": 4,
+  "difficulty": "easy",
+  "instructions": "1. Heat oil in a pan. Add half a teaspoon of cumin seeds and finely chopped onions. Fry until golden brown.\n2. Add half a teaspoon of coriander powder, salt, half a teaspoon of garam masala powder, and one teaspoon of chili powder. Mix well.\n3. Cover with a lid and cook on low flame for three to four minutes, until the oil rises to the surface.",
+  "ingredients": [
+    {
+      "name": "Cumin Seeds",
+      "quantity": 0.5,
+      "unit": "teaspoon",
+      "is_optional": false,
+      "preparation_note": null
+    },
+    {
+      "name": "Onion",
+      "quantity": 1,
+      "unit": null,
+      "is_optional": false,
+      "preparation_note": "finely chopped"
+    },
+    {
+      "name": "Coriander Powder",
+      "quantity": 0.5,
+      "unit": "teaspoon",
+      "is_optional": false,
+      "preparation_note": null
+    },
+    {
+      "name": "Salt",
+      "quantity": null,
+      "unit": null,
+      "is_optional": false,
+      "preparation_note": "to taste"
+    },
+    {
+      "name": "Garam Masala Powder",
+      "quantity": 0.5,
+      "unit": "teaspoon",
+      "is_optional": false,
+      "preparation_note": null
+    },
+    {
+      "name": "Chili Powder",
+      "quantity": 1,
+      "unit": "teaspoon",
+      "is_optional": false,
+      "preparation_note": null
+    }
+  ],
+  "is_vegetarian": true,
+  "is_vegan": false,
+  "is_gluten_free": true,
+  "calories_per_serving": 250,
+  "confidence": 0.85,
+  "source": "https://www.youtube.com/watch?v=cjGDsV6FvNE",
+  "extracted_at": "2025-12-29T15:39:07.053493"
+}

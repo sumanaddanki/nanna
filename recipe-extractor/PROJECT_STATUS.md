@@ -45,33 +45,32 @@ Mapped to NutriNine tables:
 
 ## ⏳ PENDING (User Testing Required)
 
-### 1. Setup & Installation
+### 1. Setup & Installation ✅ COMPLETED
 **Who:** User (Chinna)
-**What to do:**
-1. Install system dependencies:
-   ```bash
-   brew install ffmpeg  # For video processing
-   ```
+**Status:** ✅ Mac Studio setup complete
 
-2. Create virtual environment:
-   ```bash
-   cd recipe-extractor
-   python3 -m venv venv
-   source venv/bin/activate
-   ```
+1. ✅ System dependencies installed (ffmpeg)
+2. ✅ Virtual environment created
+3. ✅ Python packages installed
+4. ✅ Environment configured (.env with API keys)
+5. ✅ Tested with real Telugu video (Palak Paneer)
 
-3. Install Python packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
+**Result:** Working! Confidence improved from 0.6 (base) to 0.85 (large)
 
-4. Configure environment:
-   ```bash
-   cp .env.example .env
-   # Add your GEMINI_API_KEY (already have: AIzaSyBA27fTF2AyRISvz0LAJTX9mCL8B2PJxBY)
-   ```
+### 2. MSI CUDA Machine Setup (NEW)
+**Who:** User (Chinna)
+**Status:** ⏳ Pending
+**Hardware:** MSI Pro with RTX 5080 (16GB VRAM)
 
-### 2. Test with Different Sources
+**See:** [SETUP_MSI_CUDA.md](SETUP_MSI_CUDA.md) for complete instructions
+
+**Why MSI?**
+- 10-20x faster than Mac Studio CPU
+- Whisper large: ~30s on Mac → ~10-15s on RTX 5080
+- Cost: Almost free (₹0.05/recipe vs ₹3.75 for Sarvam AI)
+- Better Telugu quality than cloud APIs
+
+### 3. Test with Different Sources
 **Who:** User (Chinna)
 
 #### Test 1: Image Recipe (Amma's Handwritten Recipes!)

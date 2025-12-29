@@ -149,7 +149,7 @@ def format_with_gemini(raw_text: str) -> dict:
 
     api_key = os.getenv("GEMINI_API_KEY")
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.0-flash-exp')
 
     prompt = f"{GEMINI_RECIPE_PROMPT}\n\n---\n\nRaw text:\n\n{raw_text}"
 
@@ -192,14 +192,70 @@ def download_video_audio(url: str, output_dir: str) -> str:
     return audio_path
 
 
-def transcribe_audio(audio_path: str) -> str:
-    """Transcribe audio using Whisper"""
-    console.print("[yellow]Transcribing audio with Whisper...[/yellow]")
+def transcribe_audio_sarvam(audio_path: str) -> str:
+    """Transcribe audio using Sarvam AI (better for Telugu/Indic languages)"""
+    console.print("[yellow]Transcribing audio with Sarvam AI...[/yellow]")
+
+    import requests
+
+    api_key = os.getenv("SARVAM_API_KEY")
+    if not api_key:
+        console.print("[yellow]Sarvam API key not found, falling back to Whisper[/yellow]")
+        return transcribe_audio_whisper(audio_path)
+
+    url = "https://api.sarvam.ai/speech-to-text"
+    headers = {"api-subscription-key": api_key}
+
+    with open(audio_path, 'rb') as audio_file:
+        files = {'file': audio_file}
+        data = {
+            'model': 'saarika:v2.5',
+            'language_code': 'unknown'  # Auto-detect
+        }
+
+        try:
+            response = requests.post(url, headers=headers, files=files, data=data, timeout=60)
+            response.raise_for_status()
+            result = response.json()
+            return result.get('transcript', '')
+        except Exception as e:
+            console.print(f"[yellow]Sarvam AI failed ({e}), falling back to Whisper[/yellow]")
+            return transcribe_audio_whisper(audio_path)
+
+
+def transcribe_audio_whisper(audio_path: str, model_size: str = "large") -> str:
+    """Transcribe audio using Whisper (fallback)
+
+    Args:
+        audio_path: Path to audio file
+        model_size: Whisper model size (tiny/base/small/medium/large)
+                   Default: large (best for Telugu/multilingual)
+    """
+    console.print(f"[yellow]Transcribing audio with Whisper ({model_size})...[/yellow]")
 
     import whisper
-    model = whisper.load_model("base")
-    result = model.transcribe(audio_path)
+    import torch
+
+    # Check if CUDA is available
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    console.print(f"[dim]Using device: {device}[/dim]")
+
+    if device == "cuda":
+        console.print(f"[dim]GPU: {torch.cuda.get_device_name(0)}[/dim]")
+
+    # Load model
+    model = whisper.load_model(model_size, device=device)
+
+    # Transcribe with FP16 for GPU acceleration
+    fp16 = device == "cuda"
+    result = model.transcribe(audio_path, fp16=fp16, language="te")  # Telugu hint
+
     return result["text"]
+
+
+def transcribe_audio(audio_path: str) -> str:
+    """Transcribe audio - tries Sarvam AI first, falls back to Whisper"""
+    return transcribe_audio_sarvam(audio_path)
 
 
 def save_as_markdown(recipe_data: dict, output_dir: str, source: str) -> str:
@@ -299,14 +355,18 @@ def process_image(image_path: str, output_dir: str, output_format: str):
     console.print(f"[dim]Confidence: {recipe_data['confidence']:.2f}[/dim]")
 
 
-def process_video(url: str, output_dir: str, output_format: str):
+def process_video(url: str, output_dir: str, output_format: str, whisper_model: str = "large"):
     """Process video (YouTube/Facebook)"""
     with tempfile.TemporaryDirectory() as temp_dir:
         # Download audio
         audio_path = download_video_audio(url, temp_dir)
 
-        # Transcribe
-        raw_text = transcribe_audio(audio_path)
+        # Transcribe (skip Sarvam, use Whisper directly if large model requested)
+        if whisper_model != "base":
+            console.print(f"[cyan]Using Whisper {whisper_model} (skipping Sarvam AI)[/cyan]")
+            raw_text = transcribe_audio_whisper(audio_path, model_size=whisper_model)
+        else:
+            raw_text = transcribe_audio(audio_path)
 
         console.print(f"\n[dim]Transcribed text:[/dim]")
         console.print(f"[dim]{raw_text[:500]}...[/dim]\n")
@@ -335,6 +395,8 @@ def main():
     parser.add_argument("source", help="URL or file path (image/PDF)")
     parser.add_argument("--output", "-o", default="recipes/", help="Output directory")
     parser.add_argument("--format", "-f", choices=['md', 'json'], default='md', help="Output format (default: md)")
+    parser.add_argument("--whisper-model", "-w", choices=['tiny', 'base', 'small', 'medium', 'large'],
+                       default='large', help="Whisper model size (default: large, best for Telugu)")
 
     args = parser.parse_args()
 
@@ -347,7 +409,7 @@ def main():
     # Detect source type
     if args.source.startswith('http'):
         # Video URL
-        process_video(args.source, args.output, args.format)
+        process_video(args.source, args.output, args.format, args.whisper_model)
     elif os.path.isfile(args.source):
         # Image file
         process_image(args.source, args.output, args.format)

@@ -1,0 +1,68 @@
+{
+  "is_recipe": true,
+  "name": "Indian Style Curry (Approximate Translation)",
+  "description": "This recipe appears to describe an Indian style curry, though the exact ingredients and method are unclear due to potential translation issues. The steps seem to involve cooking vegetables with spices and a creamy sauce.",
+  "prep_time_minutes": 15,
+  "cooking_time_minutes": 30,
+  "servings": 4,
+  "difficulty": "medium",
+  "instructions": "1. Heat 4-5 teaspoons of oil. 2. Add chopped tomatoes. 3. Add 5-6 teaspoons of curry powder. 4. Cook until the oil separates. 5. Add colorful bell peppers. 6. Add chopped other vegetables. 7. Mix well with 2-3 chopped tomatoes. 8. Mix well with 3-3 teaspoons of creamy sauce. 9. Combine and mix well. 10. Add cream for a desirable creamy texture and taste.",
+  "ingredients": [
+    {
+      "name": "Oil",
+      "quantity": "4-5",
+      "unit": "teaspoons",
+      "is_optional": false,
+      "preparation_note": null
+    },
+    {
+      "name": "Tomatoes",
+      "quantity": "2-3",
+      "unit": null,
+      "is_optional": false,
+      "preparation_note": "chopped"
+    },
+    {
+      "name": "Curry Powder",
+      "quantity": "5-6",
+      "unit": "teaspoons",
+      "is_optional": false,
+      "preparation_note": null
+    },
+    {
+      "name": "Bell Peppers",
+      "quantity": null,
+      "unit": null,
+      "is_optional": false,
+      "preparation_note": "colorful"
+    },
+    {
+      "name": "Other Vegetables",
+      "quantity": null,
+      "unit": null,
+      "is_optional": true,
+      "preparation_note": "chopped"
+    },
+    {
+      "name": "Creamy Sauce",
+      "quantity": "3-3",
+      "unit": "teaspoons",
+      "is_optional": true,
+      "preparation_note": null
+    },
+    {
+      "name": "Cream",
+      "quantity": null,
+      "unit": null,
+      "is_optional": true,
+      "preparation_note": null
+    }
+  ],
+  "is_vegetarian": true,
+  "is_vegan": false,
+  "is_gluten_free": true,
+  "calories_per_serving": 300,
+  "confidence": 0.6,
+  "source": "https://www.youtube.com/watch?v=cjGDsV6FvNE",
+  "extracted_at": "2025-12-29T15:30:19.535395"
+}
