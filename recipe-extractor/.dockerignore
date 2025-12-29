@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+uploads/
+*.mp3
+*.mp4
+*.avi
+test_audio.mp3
+
+# Git
+.git/
+.gitignore
+
+# Documentation (keep in image)
+# *.md
+
+# Keep recipes for reference
+# recipes/
