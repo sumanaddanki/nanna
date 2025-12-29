@@ -27,10 +27,12 @@ PICO_IP = os.getenv("PICO_IP", "192.168.1.100")
 PICO_PORT = int(os.getenv("PICO_PORT", 8888))
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 CAPTURE_DEVICE = int(os.getenv("CAPTURE_DEVICE", 0))  # 0 = default camera/capture
-WEB_PORT = int(os.getenv("WEB_PORT", 5000))
+WEB_PORT = int(os.getenv("WEB_PORT", 9999))
 # =======================================
 
-app = Flask(__name__)
+app = Flask(__name__,
+            template_folder='../web/templates',
+            static_folder='../web/static')
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Initialize Gemini

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote PC Control - AI-Powered KVM</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🖥️ Remote PC Control</h1>
+            <div class="status">
+                <span id="pico-status" class="status-badge disconnected">Pico W: Disconnected</span>
+                <span id="video-status" class="status-badge disconnected">Video: Off</span>
+            </div>
+        </header>
+
+        <main>
+            <!-- Video Feed Section -->
+            <section class="video-section">
+                <div class="video-container">
+                    <img id="video-feed" src="" alt="PC Screen Feed">
+                    <div class="video-overlay">
+                        <div id="mouse-cursor"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Control Panel -->
+            <section class="control-panel">
+                <div class="panel-grid">
+                    <!-- Mouse Control -->
+                    <div class="panel-card">
+                        <h3>🖱️ Mouse Control</h3>
+                        <div class="control-group">
+                            <label>
+                                <input type="checkbox" id="mouse-enabled" checked>
+                                Click on screen to control mouse
+                            </label>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-secondary" onclick="sendMouseClick('left')">Left Click</button>
+                            <button class="btn btn-secondary" onclick="sendMouseClick('right')">Right Click</button>
+                        </div>
+                    </div>
+
+                    <!-- Keyboard Control -->
+                    <div class="panel-card">
+                        <h3>⌨️ Keyboard</h3>
+                        <div class="control-group">
+                            <input type="text" id="text-input" placeholder="Type here to send to PC...">
+                            <button class="btn btn-primary" onclick="sendText()">Send Text</button>
+                        </div>
+                        <div class="button-group">
+                            <button class="btn btn-small" onclick="sendKey('ENTER')">Enter</button>
+                            <button class="btn btn-small" onclick="sendKey('TAB')">Tab</button>
+                            <button class="btn btn-small" onclick="sendKey('ESCAPE')">Esc</button>
+                            <button class="btn btn-small" onclick="sendKey('BACKSPACE')">Back</button>
+                        </div>
+                    </div>
+
+                    <!-- AI Assistant -->
+                    <div class="panel-card full-width">
+                        <h3>🤖 AI Assistant</h3>
+                        <div class="control-group">
+                            <textarea id="ai-command" placeholder="Describe what you want to do... e.g., 'Open Chrome and go to gmail.com'"></textarea>
+                            <button class="btn btn-primary" onclick="sendAICommand()">Execute with AI</button>
+                        </div>
+                        <div id="ai-response" class="response-box"></div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="panel-card">
+                        <h3>⚡ Quick Actions</h3>
+                        <div class="button-grid">
+                            <button class="btn btn-action" onclick="sendShortcut('CTRL+C')">Copy</button>
+                            <button class="btn btn-action" onclick="sendShortcut('CTRL+V')">Paste</button>
+                            <button class="btn btn-action" onclick="sendShortcut('CTRL+Z')">Undo</button>
+                            <button class="btn btn-action" onclick="sendShortcut('CTRL+S')">Save</button>
+                            <button class="btn btn-action" onclick="sendShortcut('ALT+TAB')">Switch</button>
+                            <button class="btn btn-action" onclick="sendShortcut('WIN')">Start</button>
+                        </div>
+                    </div>
+
+                    <!-- System Info -->
+                    <div class="panel-card">
+                        <h3>📊 System Info</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Pico IP:</span>
+                                <span id="pico-ip">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Video Resolution:</span>
+                                <span id="video-res">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">FPS:</span>
+                                <span id="fps">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Remote PC Control • AI-Powered KVM Solution</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
