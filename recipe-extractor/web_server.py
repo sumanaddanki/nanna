@@ -17,6 +17,14 @@ from flask_socketio import SocketIO, emit
 from werkzeug.utils import secure_filename
 import threading
 import time
+import platform
+
+# Add ffmpeg to PATH if on Windows
+if platform.system() == 'Windows':
+    ffmpeg_path = r'C:\ffmpeg\bin'
+    if os.path.exists(ffmpeg_path) and ffmpeg_path not in os.environ['PATH']:
+        os.environ['PATH'] = ffmpeg_path + os.pathsep + os.environ['PATH']
+        print(f"Added ffmpeg to PATH: {ffmpeg_path}")
 
 # Add current directory to path for imports
 sys.path.insert(0, os.path.dirname(__file__))
