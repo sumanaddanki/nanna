@@ -1,0 +1,29 @@
+# Recipe Extractor Dependencies
+
+# Video downloading
+yt-dlp>=2024.1.0
+
+# Instagram content
+instaloader>=4.10
+
+# Speech-to-text (for video audio)
+openai-whisper>=20231117
+
+# Image OCR
+pytesseract>=0.3.10
+Pillow>=10.0.0
+
+# PDF extraction
+PyMuPDF>=1.23.0
+
+# Gemini API
+google-generativeai>=0.3.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# Rich terminal output
+rich>=13.0.0
+
+# Audio processing
+ffmpeg-python>=0.2.0

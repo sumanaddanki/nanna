@@ -44,3 +44,9 @@ __pycache__/
 
 # Amma POC voice recordings
 amma-poc/voice/
+
+# Recipe extractor - exclude large files and outputs
+recipe-extractor/recipes/*.mp4
+recipe-extractor/recipes/*.mp3
+recipe-extractor/recipes/*.wav
+recipe-extractor/venv/
