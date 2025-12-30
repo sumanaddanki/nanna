@@ -101,12 +101,17 @@ def extract_video_frames(video_path, output_dir, fps=2):
 def process_url(url, sid):
     """Process video URL with real-time updates"""
     try:
+        print(f"[{sid}] Processing URL: {url}")
         socketio.emit('status', {'step': 'download', 'message': 'Downloading video...'}, room=sid)
 
         with tempfile.TemporaryDirectory() as temp_dir:
+            print(f"[{sid}] Temp directory: {temp_dir}")
+
             # Download audio
+            print(f"[{sid}] Starting download...")
             audio_path = download_video_audio(url, temp_dir)
-            socketio.emit('status', {'step': 'download_complete', 'message': 'Download complete'}, room=sid)
+            print(f"[{sid}] Audio downloaded to: {audio_path}")
+            socketio.emit('status', {'step': 'download_complete', 'message': f'Download complete: {os.path.basename(audio_path)}'}, room=sid)
 
             # Transcribe with progress
             socketio.emit('status', {'step': 'transcribe', 'message': 'Transcribing audio...'}, room=sid)
@@ -139,7 +144,10 @@ def process_url(url, sid):
             }, room=sid)
 
     except Exception as e:
-        socketio.emit('error', {'message': str(e)}, room=sid)
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"[{sid}] ERROR: {error_details}")
+        socketio.emit('error', {'message': f"{str(e)}\n\nDetails: {error_details}"}, room=sid)
 
 
 def process_image(image_path, sid):
@@ -185,7 +193,10 @@ def process_image(image_path, sid):
         }, room=sid)
 
     except Exception as e:
-        socketio.emit('error', {'message': str(e)}, room=sid)
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"[{sid}] ERROR: {error_details}")
+        socketio.emit('error', {'message': f"{str(e)}\n\nDetails: {error_details}"}, room=sid)
 
 
 def process_video_file(video_path, sid):
@@ -243,7 +254,10 @@ def process_video_file(video_path, sid):
             }, room=sid)
 
     except Exception as e:
-        socketio.emit('error', {'message': str(e)}, room=sid)
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"[{sid}] ERROR: {error_details}")
+        socketio.emit('error', {'message': f"{str(e)}\n\nDetails: {error_details}"}, room=sid)
 
 
 @app.route('/')
