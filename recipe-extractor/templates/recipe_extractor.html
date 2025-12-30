@@ -24,6 +24,7 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr auto;
             gap: 20px;
             height: calc(100vh - 40px);
         }
@@ -328,6 +329,36 @@
             margin-bottom: 15px;
             opacity: 0.3;
         }
+
+        /* Log Panel */
+        .log-panel {
+            grid-column: 2;
+            grid-row: 2;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 6px 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-timestamp {
+            color: #999;
+            margin-right: 8px;
+        }
+
+        .log-level-info { color: #2196f3; }
+        .log-level-success { color: #4caf50; }
+        .log-level-warning { color: #ff9800; }
+        .log-level-error { color: #f44336; }
     </style>
 </head>
 <body>
@@ -375,6 +406,17 @@
                 <div class="empty-state">
                     <div class="empty-state-icon">🍳</div>
                     <div>Upload a recipe to see the magic happen!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Log Panel (Bottom Right) -->
+        <div class="panel log-panel">
+            <h1 style="font-size: 18px; margin-bottom: 5px;">📋 Extraction Logs</h1>
+            <p class="subtitle" style="margin-bottom: 15px;">Step-by-step processing details</p>
+            <div id="logArea" style="flex: 1; overflow-y: auto;">
+                <div class="empty-state" style="padding: 15px; font-size: 13px;">
+                    Logs will appear here during extraction...
                 </div>
             </div>
         </div>
@@ -429,6 +471,8 @@
             if (!url) return;
 
             clearOutput();
+            clearLogs();
+            addLog(`Starting extraction for URL: ${url}`, 'info');
             updateStatus('Processing URL...', 'active');
             socket.emit('extract_url', { url: url });
         }
@@ -467,13 +511,37 @@
             outputArea.scrollTop = outputArea.scrollHeight;
         }
 
+        // Log function
+        function addLog(message, level = 'info') {
+            const logArea = document.getElementById('logArea');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span><span class="log-level-${level}">${message}</span>`;
+
+            // Remove empty state if exists
+            const emptyState = logArea.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+
+            logArea.appendChild(logEntry);
+            logArea.scrollTop = logArea.scrollHeight; // Auto-scroll to bottom
+        }
+
+        function clearLogs() {
+            const logArea = document.getElementById('logArea');
+            logArea.innerHTML = '<div class="empty-state" style="padding: 15px; font-size: 13px;">Logs will appear here during extraction...</div>';
+        }
+
         // Socket events
         socket.on('status', (data) => {
             updateStatus(data.message, data.step.includes('complete') ? 'complete' : 'active');
+            const level = data.step.includes('complete') ? 'success' : data.step.includes('error') ? 'error' : 'info';
+            addLog(`[${data.step}] ${data.message}`, level);
         });
 
         socket.on('transcript', (data) => {
             addSection('📝 Transcription', `<div class="transcript-box">${data.text}</div>`);
+            addLog(`Received transcript (${data.text.length} chars)`, 'success');
         });
 
         socket.on('ocr_result', (data) => {
