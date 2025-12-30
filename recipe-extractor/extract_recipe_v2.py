@@ -170,6 +170,63 @@ def format_with_gemini(raw_text: str) -> dict:
         raise
 
 
+def extract_url_metadata(url: str) -> dict:
+    """
+    Extract metadata (title, description, caption) from social media URLs
+    Works with: Instagram, YouTube, Facebook, TikTok
+    Returns: dict with 'title', 'description', 'text' keys
+    """
+    console.print("[yellow]Extracting metadata from URL...[/yellow]")
+
+    import requests
+
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'}
+        response = requests.get(url, headers=headers, timeout=10)
+        html = response.text
+
+        metadata = {
+            'title': '',
+            'description': '',
+            'text': ''
+        }
+
+        # Extract Open Graph title
+        og_title_match = re.search(r'<meta property="og:title" content="([^"]*)"', html)
+        if og_title_match:
+            title = og_title_match.group(1)
+            # Decode HTML entities
+            title = title.replace('&quot;', '"').replace('&#x2019;', "'").replace('&#064;', '@').replace('&amp;', '&')
+            metadata['title'] = title
+            console.print(f"[dim]Title: {title[:100]}[/dim]")
+
+        # Extract description
+        desc_match = re.search(r'<meta name="description" content="([^"]*)"', html)
+        if desc_match:
+            desc = desc_match.group(1)
+            desc = desc.replace('&quot;', '"').replace('&#x2019;', "'").replace('&#064;', '@').replace('&amp;', '&')
+            metadata['description'] = desc
+            console.print(f"[dim]Description: {desc[:100]}...[/dim]")
+
+        # Combine for text processing
+        metadata['text'] = f"{metadata['title']}\n\n{metadata['description']}"
+
+        # Check if we have enough recipe content
+        recipe_keywords = ['recipe', 'ingredients', 'instructions', 'cook', 'preparation', 'serves']
+        has_recipe_content = any(kw in metadata['text'].lower() for kw in recipe_keywords)
+
+        if has_recipe_content and len(metadata['text']) > 100:
+            console.print("[green]✓ Found recipe metadata in URL[/green]")
+            return metadata
+        else:
+            console.print("[yellow]Metadata found but insufficient for recipe extraction[/yellow]")
+            return None
+
+    except Exception as e:
+        console.print(f"[yellow]Could not extract metadata: {e}[/yellow]")
+        return None
+
+
 def download_video_audio(url: str, output_dir: str) -> str:
     """Download video using yt-dlp and extract audio"""
     console.print("[yellow]Downloading video...[/yellow]")
@@ -376,35 +433,79 @@ def process_image(image_path: str, output_dir: str, output_format: str):
 
 
 def process_video(url: str, output_dir: str, output_format: str, whisper_model: str = "large"):
-    """Process video (YouTube/Facebook)"""
-    with tempfile.TemporaryDirectory() as temp_dir:
-        # Download audio
-        audio_path = download_video_audio(url, temp_dir)
+    """Process video (YouTube/Instagram/Facebook/TikTok)"""
 
-        # Transcribe (skip Sarvam, use Whisper directly if large model requested)
-        if whisper_model != "base":
-            console.print(f"[cyan]Using Whisper {whisper_model} (skipping Sarvam AI)[/cyan]")
-            raw_text = transcribe_audio_whisper(audio_path, model_size=whisper_model)
+    # Step 1: Try to extract recipe from URL metadata first
+    metadata = extract_url_metadata(url)
+
+    raw_text = None
+    source = "metadata"
+
+    if metadata and len(metadata['text']) > 100:
+        # We have good metadata, try to extract recipe directly
+        console.print("[cyan]Attempting recipe extraction from metadata only...[/cyan]")
+        raw_text = metadata['text']
+        source = "metadata"
+    else:
+        # Metadata insufficient, fall back to video transcription
+        console.print("[cyan]Metadata insufficient, proceeding with video transcription...[/cyan]")
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Download audio
+            audio_path = download_video_audio(url, temp_dir)
+
+            # Transcribe (skip Sarvam, use Whisper directly if large model requested)
+            if whisper_model != "base":
+                console.print(f"[cyan]Using Whisper {whisper_model} (skipping Sarvam AI)[/cyan]")
+                raw_text = transcribe_audio_whisper(audio_path, model_size=whisper_model)
+            else:
+                raw_text = transcribe_audio(audio_path)
+
+            source = "transcription"
+
+    if not raw_text:
+        console.print("[red]Failed to extract any text from URL[/red]")
+        return
+
+    console.print(f"\n[dim]Extracted text from {source}:[/dim]")
+    console.print(f"[dim]{raw_text[:500]}...[/dim]\n")
+
+    # Format with Gemini
+    recipe_data = format_with_gemini(raw_text)
+
+    if recipe_data.get('is_recipe') == False:
+        console.print(f"[yellow]Not a recipe: {recipe_data.get('reason')}[/yellow]")
+
+        # If metadata failed, try transcription as fallback
+        if source == "metadata":
+            console.print("[yellow]Metadata didn't contain recipe, falling back to video transcription...[/yellow]")
+            with tempfile.TemporaryDirectory() as temp_dir:
+                audio_path = download_video_audio(url, temp_dir)
+                raw_text = transcribe_audio_whisper(audio_path, model_size=whisper_model)
+                recipe_data = format_with_gemini(raw_text)
+
+                if recipe_data.get('is_recipe') == False:
+                    console.print(f"[red]Still not a recipe after transcription: {recipe_data.get('reason')}[/red]")
+                    return
         else:
-            raw_text = transcribe_audio(audio_path)
-
-        console.print(f"\n[dim]Transcribed text:[/dim]")
-        console.print(f"[dim]{raw_text[:500]}...[/dim]\n")
-
-        # Format
-        recipe_data = format_with_gemini(raw_text)
-
-        if recipe_data.get('is_recipe') == False:
-            console.print(f"[yellow]Not a recipe: {recipe_data.get('reason')}[/yellow]")
             return
 
-        # Save
-        if output_format == 'json':
-            filepath = save_as_json(recipe_data, output_dir, url)
-        else:
-            filepath = save_as_markdown(recipe_data, output_dir, url)
+    # Add source info to recipe data
+    recipe_data['extraction_source'] = source
+    if metadata:
+        recipe_data['metadata'] = {
+            'title': metadata.get('title', ''),
+            'description': metadata.get('description', '')
+        }
 
-        console.print(f"[green]✓ Recipe saved to: {filepath}[/green]")
+    # Save
+    if output_format == 'json':
+        filepath = save_as_json(recipe_data, output_dir, url)
+    else:
+        filepath = save_as_markdown(recipe_data, output_dir, url)
+
+    console.print(f"[green]✓ Recipe saved to: {filepath}[/green]")
+    console.print(f"[dim]Extracted from: {source}[/dim]")
 
 
 def main():
