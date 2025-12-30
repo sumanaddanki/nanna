@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from extract_recipe_v2 import (
     gemini_ocr_image,
     format_with_gemini,
+    extract_url_metadata,
     download_video_audio,
     transcribe_audio_whisper,
     save_as_json,
@@ -102,46 +103,76 @@ def process_url(url, sid):
     """Process video URL with real-time updates"""
     try:
         print(f"[{sid}] Processing URL: {url}")
-        socketio.emit('status', {'step': 'download', 'message': 'Downloading video...'}, room=sid)
 
-        with tempfile.TemporaryDirectory() as temp_dir:
-            print(f"[{sid}] Temp directory: {temp_dir}")
+        # Step 1: Try to extract metadata first
+        socketio.emit('status', {'step': 'metadata', 'message': 'Extracting metadata from URL...'}, room=sid)
+        metadata = extract_url_metadata(url)
 
-            # Download audio
-            print(f"[{sid}] Starting download...")
-            audio_path = download_video_audio(url, temp_dir)
-            print(f"[{sid}] Audio downloaded to: {audio_path}")
-            socketio.emit('status', {'step': 'download_complete', 'message': f'Download complete: {os.path.basename(audio_path)}'}, room=sid)
+        transcript = None
+        source = "metadata"
 
-            # Transcribe with progress
-            socketio.emit('status', {'step': 'transcribe', 'message': 'Transcribing audio...'}, room=sid)
+        if metadata and len(metadata.get('text', '')) > 100:
+            # We have good metadata, try recipe extraction from metadata only
+            print(f"[{sid}] Found metadata: {metadata.get('title', '')[:100]}")
+            socketio.emit('status', {'step': 'metadata_found', 'message': 'Metadata found! Attempting recipe extraction...'}, room=sid)
+            socketio.emit('transcript', {'text': metadata['text']}, room=sid)
+            transcript = metadata['text']
+            source = "metadata"
+        else:
+            # Metadata insufficient, download video and transcribe
+            print(f"[{sid}] Metadata insufficient, downloading video...")
+            socketio.emit('status', {'step': 'download', 'message': 'Metadata insufficient. Downloading video...'}, room=sid)
 
-            transcript = transcribe_audio_whisper(audio_path, model_size="large")
+            with tempfile.TemporaryDirectory() as temp_dir:
+                print(f"[{sid}] Temp directory: {temp_dir}")
 
-            socketio.emit('transcript', {'text': transcript}, room=sid)
-            socketio.emit('status', {'step': 'transcribe_complete', 'message': 'Transcription complete'}, room=sid)
+                # Download audio
+                print(f"[{sid}] Starting download...")
+                audio_path = download_video_audio(url, temp_dir)
+                print(f"[{sid}] Audio downloaded to: {audio_path}")
+                socketio.emit('status', {'step': 'download_complete', 'message': f'Download complete: {os.path.basename(audio_path)}'}, room=sid)
 
-            # Format recipe
-            socketio.emit('status', {'step': 'format', 'message': 'Formatting recipe with AI...'}, room=sid)
+                # Transcribe with progress
+                socketio.emit('status', {'step': 'transcribe', 'message': 'Transcribing audio...'}, room=sid)
 
-            recipe_data = format_with_gemini(transcript)
+                transcript = transcribe_audio_whisper(audio_path, model_size="large")
 
-            if recipe_data.get('is_recipe') == False:
-                socketio.emit('error', {'message': f"Not a recipe: {recipe_data.get('reason')}"}, room=sid)
-                return
+                socketio.emit('transcript', {'text': transcript}, room=sid)
+                socketio.emit('status', {'step': 'transcribe_complete', 'message': 'Transcription complete'}, room=sid)
+                source = "transcription"
 
-            # Save outputs
-            recipe_data['source'] = url
-            recipe_data['extracted_at'] = datetime.now().isoformat()
+        if not transcript:
+            socketio.emit('error', {'message': 'Failed to extract any text from URL'}, room=sid)
+            return
 
-            json_path = save_as_json(recipe_data, 'recipes', url)
-            md_path = save_as_markdown(recipe_data, 'recipes', url)
+        # Format recipe
+        socketio.emit('status', {'step': 'format', 'message': 'Formatting recipe with AI...'}, room=sid)
 
-            socketio.emit('result', {
-                'recipe': recipe_data,
-                'json_path': json_path,
-                'md_path': md_path
-            }, room=sid)
+        recipe_data = format_with_gemini(transcript)
+
+        if recipe_data.get('is_recipe') == False:
+            socketio.emit('error', {'message': f"Not a recipe: {recipe_data.get('reason')}"}, room=sid)
+            return
+
+        # Save outputs with source tracking
+        recipe_data['source'] = url
+        recipe_data['extraction_source'] = source
+        recipe_data['extracted_at'] = datetime.now().isoformat()
+        if metadata:
+            recipe_data['metadata'] = {
+                'title': metadata.get('title', ''),
+                'description': metadata.get('description', '')
+            }
+
+        json_path = save_as_json(recipe_data, 'recipes', url)
+        md_path = save_as_markdown(recipe_data, 'recipes', url)
+
+        socketio.emit('result', {
+            'recipe': recipe_data,
+            'json_path': json_path,
+            'md_path': md_path,
+            'source': source
+        }, room=sid)
 
     except Exception as e:
         import traceback
