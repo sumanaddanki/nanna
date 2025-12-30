@@ -16,6 +16,7 @@ import json
 import tempfile
 import subprocess
 import base64
+import platform
 from pathlib import Path
 from datetime import datetime
 from urllib.parse import urlparse
