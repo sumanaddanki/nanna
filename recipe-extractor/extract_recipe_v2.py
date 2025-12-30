@@ -245,19 +245,29 @@ def transcribe_audio_whisper(audio_path: str, model_size: str = "large") -> str:
     import whisper
     import torch
 
-    # Check if CUDA is available
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    console.print(f"[dim]Using device: {device}[/dim]")
+    # Force CPU mode on Windows due to RTX 5080 sm_120 incompatibility with current PyTorch
+    # Once PyTorch adds Blackwell support, this can be removed
+    if platform.system() == 'Windows':
+        device = "cpu"
+        console.print(f"[yellow]Using CPU mode on Windows (RTX 5080 sm_120 not yet supported by PyTorch)[/yellow]")
+    else:
+        # Check if CUDA is available on non-Windows platforms
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        console.print(f"[dim]Using device: {device}[/dim]")
 
-    if device == "cuda":
-        console.print(f"[dim]GPU: {torch.cuda.get_device_name(0)}[/dim]")
+        if device == "cuda":
+            console.print(f"[dim]GPU: {torch.cuda.get_device_name(0)}[/dim]")
 
     # Load model
+    console.print(f"[yellow]Loading Whisper {model_size} model on {device}...[/yellow]")
     model = whisper.load_model(model_size, device=device)
+    console.print(f"[green]Model loaded successfully![/green]")
 
-    # Transcribe with FP16 for GPU acceleration
+    # Transcribe with FP16 for GPU acceleration (disabled for CPU)
+    console.print(f"[yellow]Starting transcription...[/yellow]")
     fp16 = device == "cuda"
     result = model.transcribe(audio_path, fp16=fp16, language="te")  # Telugu hint
+    console.print(f"[green]Transcription complete![/green]")
 
     return result["text"]
 
