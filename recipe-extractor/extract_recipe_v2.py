@@ -175,8 +175,10 @@ def download_video_audio(url: str, output_dir: str) -> str:
 
     audio_path = os.path.join(output_dir, "audio.mp3")
 
+    # Use Python module instead of command to avoid PATH issues
     cmd = [
-        "yt-dlp", "-x", "--audio-format", "mp3",
+        sys.executable, "-m", "yt_dlp",
+        "-x", "--audio-format", "mp3",
         "--audio-quality", "0",
         "-o", audio_path.replace(".mp3", ".%(ext)s"),
         url
