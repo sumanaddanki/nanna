@@ -182,6 +182,13 @@ def download_video_audio(url: str, output_dir: str) -> str:
         url
     ]
 
+    # Add ffmpeg location for Windows
+    import platform
+    if platform.system() == 'Windows':
+        ffmpeg_exe = r'C:\ffmpeg\bin\ffmpeg.exe'
+        if os.path.exists(ffmpeg_exe):
+            cmd.extend(["--ffmpeg-location", r"C:\ffmpeg\bin"])
+
     subprocess.run(cmd, check=True, capture_output=True)
 
     # Find downloaded file
