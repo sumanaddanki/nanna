@@ -36,6 +36,17 @@ tools/bin/
 *.mp3
 *.m4a
 
+# Voice cloning tools (large models, venvs, datasets)
+tools/OpenVoice/
+tools/VoiceCloner/
+tools/finetune-hf-vits/
+tools/mms-tts-tel-train/
+tools/nanna-avatar/
+tools/telugu_datasets/
+tools/vakyansh-tts/
+tools/vakyansh/
+tools/venv-openvoice/
+
 # Python virtual environments
 venv/
 tools/venv-xtts/
